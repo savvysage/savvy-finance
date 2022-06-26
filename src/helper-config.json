@@ -1,0 +1,10 @@
+{
+  "appName": "FarmVerse DApp",
+  "appShortName": "FarmVerse",
+  "networks": {
+    "4": "rinkeby",
+    "97": "bsc-test",
+    "56": "bsc-main"
+  },
+  "zeroAddress": "0x0000000000000000000000000000000000000000"
+}

@@ -1,0 +1,20 @@
+{
+  "97": {
+    "ProxyAdmin": [
+      "0xbDE1c017B1e83f4e339464596F493d16EaC36e81"
+    ],
+    "SavvyFinanceFarm": [
+      "0xBF892C932C1eE21e7530Bde2a627a48db7Ebafd1"
+    ],
+    "SavvyFinanceFarmLibrary": [
+      "0xd02Df7A4972b0B6C305bD828B8e8d0D5e61e2Fb1"
+    ],
+    "SavvyFinanceUpgradeable": [
+      "0x115311a96f9D0Fad9369A2f549587Bb36e007a79"
+    ],
+    "TransparentUpgradeableProxy": [
+      "0xb2E0737Ab48e687bbB93B123522398F5760dc047",
+      "0xc33210AE7977318Ed3156667856EF3BEb3618eeF"
+    ]
+  }
+}
