@@ -5,11 +5,11 @@ import SavvyFinanceFarm from "../back_end_build/contracts/SavvyFinanceFarm.json"
 import deploymentsMap from "../back_end_build/deployments/map.json";
 import helperConfig from "../helper-config.json";
 
-const defaultChainId = helperConfig.defaultChainId;
 export const farmAbi = SavvyFinanceFarm.abi;
-export const farmChain = helperConfig.networks[defaultChainId][1];
+export const farmChainId = helperConfig.defaultChainId;
+export const farmChain = helperConfig.networks[farmChainId][1];
 export const farmAddress =
-  deploymentsMap[defaultChainId]["TransparentUpgradeableProxy"][0];
+  deploymentsMap[farmChainId]["TransparentUpgradeableProxy"][0];
 
 // axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 
@@ -75,8 +75,8 @@ export const useTokens = (): string[] => {
           function_name: string;
         } = {
           abi: farmAbi,
-          chain: farmChain(),
-          address: farmAddress(),
+          chain: farmChain,
+          address: farmAddress,
           function_name: "getTokens",
         };
         const response = await Moralis.Web3API.native.runContractFunction(
