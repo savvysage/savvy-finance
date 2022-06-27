@@ -1,7 +1,7 @@
 import { constants } from "ethers";
 import { Stack } from "@mui/material";
 import { TokensTable } from "./TokensTable";
-import * as svfFarm from "../hooks/savvy_finance_farm";
+import * as svfFarm from "../hooks/farm";
 import { getContractAddress } from "../common";
 import tokensJSON from "../tokens.json";
 import { useMoralis } from "react-moralis";

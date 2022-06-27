@@ -27,7 +27,7 @@ import {
   useStakeToken,
   useUnstakeToken,
   useWithdrawRewardToken,
-} from "../hooks/savvy_finance_farm";
+} from "../hooks/farm";
 import { Token } from "./Main";
 import { StakingRewardsTable } from "./StakingRewardsTable";
 import { ConnectWallet } from "./Wallet/ConnectWallet";

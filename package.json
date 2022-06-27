@@ -2,6 +2,7 @@
   "name": "farm-verse",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://savvysage.github.io/farm-verse",
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
@@ -16,6 +17,7 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@walletconnect/web3-provider": "^1.7.8",
+    "gh-pages": "^4.0.0",
     "moment": "^2.29.3",
     "moralis": "^1.8.0",
     "react": "^18.2.0",
@@ -38,6 +40,8 @@
     "url": "^0.11.0"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",

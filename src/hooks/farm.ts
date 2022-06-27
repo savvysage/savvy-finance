@@ -13,6 +13,7 @@ import axios from "axios";
 import contractAddresses from "../back_end_build/deployments/map.json";
 import SavvyFinanceFarm from "../back_end_build/contracts/SavvyFinanceFarm.json";
 import { Token } from "../components/Main";
+import { useMoralis } from "react-moralis";
 
 // axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 
@@ -64,46 +65,45 @@ export type TokenStakerData = {
   timestampLastUpdated: number;
 };
 
-export const getTokenByAddress = (
-  tokenAddress: string,
-  tokens: Token[]
-): Token | undefined => {
-  var token: Token | undefined;
-  tokens.forEach((tokenx) => {
-    if (tokenx.address === tokenAddress) token = tokenx;
-  });
-  return token;
+export const useFarm = () => {
+  // const { chainId } = useMoralis();
+  const chainId = 97;
+
+  const farmAbi = SavvyFinanceFarm.abi;
+  const farmAddress = chainId
+    ? contractAddresses[String(chainId)]["TransparentUpgradeableProxy"][0]
+    : constants.AddressZero;
+
+  return { farmAbi, farmAddress };
 };
 
-// export const useContract = (): Contract => {
-//   const { chainId } = useEthers();
-
-//   // const networkName = chainId ? networks[String(chainId)] : "bsc-test"
-//   const svfFarmAddress = chainId
-//     ? contractAddresses[String(chainId)]["TransparentUpgradeableProxy"][0]
-//     : constants.AddressZero;
-//   const svfFarmInterface = new utils.Interface(SavvyFinanceFarm.abi);
-
-//   return new Contract(svfFarmAddress, svfFarmInterface);
-// };
-
-// export const useTokenContract = (tokenAddress: string): Contract => {
-//   return new Contract(tokenAddress, ERC20Interface);
-// };
-
 export const useTokens = (): string[] => {
-  var tokens: string[] = [];
+  const [tokens, setTokens] = useState<string[]>([]);
 
-  // const contract = useContract();
-  // const { value, error } =
-  //   useCall({
-  //     contract: contract,
-  //     method: "getTokens",
-  //     args: [],
-  //   }) ?? {};
+  const { Moralis, isInitialized } = useMoralis();
+  const { farmAbi, farmAddress } = useFarm();
 
-  // if (value) tokens = value[0];
-  // if (error) console.error(error.message);
+  const options: {
+    chain: "bsc" | "bsc testnet";
+    abi: any[];
+    address: string;
+    function_name: string;
+  } = {
+    chain: "bsc testnet",
+    abi: farmAbi,
+    address: farmAddress,
+    function_name: "getTokens",
+  };
+
+  useEffect(() => {
+    if (isInitialized)
+      (async () => {
+        const response = await Moralis.Web3API.native.runContractFunction(
+          options
+        );
+        setTokens(response as unknown as string[]);
+      })();
+  }, [isInitialized]);
 
   return tokens;
 };
