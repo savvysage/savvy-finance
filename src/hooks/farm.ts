@@ -5,11 +5,11 @@ import SavvyFinanceFarm from "../back_end_build/contracts/SavvyFinanceFarm.json"
 import deploymentsMap from "../back_end_build/deployments/map.json";
 import helperConfig from "../helper-config.json";
 
-const chainId = helperConfig.defaultChainId;
+const defaultChainId = helperConfig.defaultChainId;
 export const farmAbi = SavvyFinanceFarm.abi;
-export const farmChain = helperConfig.networks[chainId][1];
+export const farmChain = helperConfig.networks[defaultChainId][1];
 export const farmAddress =
-  deploymentsMap[chainId]["TransparentUpgradeableProxy"][0];
+  deploymentsMap[defaultChainId]["TransparentUpgradeableProxy"][0];
 
 // axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 
