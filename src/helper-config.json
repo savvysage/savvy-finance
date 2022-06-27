@@ -1,6 +1,7 @@
 {
   "appName": "FarmVerse DApp",
   "appShortName": "FarmVerse",
+  "defaultChainId": 97,
   "networks": {
     "56": ["bsc-main", "bsc"],
     "97": ["bsc-test", "bsc testnet"]
