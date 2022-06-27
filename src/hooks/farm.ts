@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import axios from "axios";
 import SavvyFinanceFarm from "../back_end_build/contracts/SavvyFinanceFarm.json";
-import contractAddresses from "../back_end_build/deployments/map.json";
+import deploymentsMap from "../back_end_build/deployments/map.json";
 import helperConfig from "../helper-config.json";
 
 export const farmAbi = SavvyFinanceFarm.abi;
 export const farmChain = (chainId: number = 97) =>
   helperConfig.networks[chainId][1];
 export const farmAddress = (chainId: number = 97) =>
-  contractAddresses[chainId]["TransparentUpgradeableProxy"][0];
+  deploymentsMap[chainId]["TransparentUpgradeableProxy"][0];
 
 // axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 
