@@ -1,19 +1,15 @@
-// import {
-//   ERC20Interface,
-//   useCall,
-//   useCalls,
-//   useContractFunction,
-//   useEthers,
-// } from "@usedapp/core";
-import { constants, Contract, utils } from "ethers";
-import { formatEther, parseEther } from "ethers/lib/utils";
 import { useEffect, useState } from "react";
-import axios from "axios";
-// import { networks } from "../helper-config.json"
-import contractAddresses from "../back_end_build/deployments/map.json";
-import SavvyFinanceFarm from "../back_end_build/contracts/SavvyFinanceFarm.json";
-import { Token } from "../components/Main";
 import { useMoralis } from "react-moralis";
+import axios from "axios";
+import SavvyFinanceFarm from "../back_end_build/contracts/SavvyFinanceFarm.json";
+import contractAddresses from "../back_end_build/deployments/map.json";
+import helperConfig from "../helper-config.json";
+
+export const farmAbi = SavvyFinanceFarm.abi;
+export const farmChain = (chainId: number = 97) =>
+  helperConfig.networks[chainId][1];
+export const farmAddress = (chainId: number = 97) =>
+  contractAddresses[chainId]["TransparentUpgradeableProxy"][0];
 
 // axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 
@@ -65,39 +61,24 @@ export type TokenStakerData = {
   timestampLastUpdated: number;
 };
 
-export const useFarm = () => {
-  // const { chainId } = useMoralis();
-  const chainId = 97;
-
-  const farmAbi = SavvyFinanceFarm.abi;
-  const farmAddress = chainId
-    ? contractAddresses[String(chainId)]["TransparentUpgradeableProxy"][0]
-    : constants.AddressZero;
-
-  return { farmAbi, farmAddress };
-};
-
 export const useTokens = (): string[] => {
   const [tokens, setTokens] = useState<string[]>([]);
-
   const { Moralis, isInitialized } = useMoralis();
-  const { farmAbi, farmAddress } = useFarm();
-
-  const options: {
-    chain: "bsc" | "bsc testnet";
-    abi: any[];
-    address: string;
-    function_name: string;
-  } = {
-    chain: "bsc testnet",
-    abi: farmAbi,
-    address: farmAddress,
-    function_name: "getTokens",
-  };
 
   useEffect(() => {
     if (isInitialized)
       (async () => {
+        const options: {
+          abi: any[];
+          chain: "bsc" | "bsc testnet";
+          address: string;
+          function_name: string;
+        } = {
+          abi: farmAbi,
+          chain: farmChain(),
+          address: farmAddress(),
+          function_name: "getTokens",
+        };
         const response = await Moralis.Web3API.native.runContractFunction(
           options
         );
@@ -109,87 +90,115 @@ export const useTokens = (): string[] => {
 };
 
 export const useTokensData = (tokensAddresses: string[]): TokenData[] | [] => {
-  var tokensData: TokenData[] | [] = [];
+  const [tokensData, setTokensData] = useState<TokenData[]>([]);
+  const { Moralis, isInitialized } = useMoralis();
 
-  // const contract = useContract();
-  // const calls =
-  //   tokensAddresses.map((tokenAddress) => ({
-  //     contract: contract,
-  //     method: "getTokenData",
-  //     args: [tokenAddress],
-  //   })) ?? [];
-  // const results = useCalls(calls) ?? [];
-
-  // results.forEach((result, index) => {
-  //   if (result?.value) {
-  //     // console.log(result.value[0]);
-  //     const address = calls[index]["args"][0];
-  //     const isActive = result.value[0]["isActive"];
-  //     const isVerified = result.value[0]["isVerified"];
-  //     const hasMultiTokenRewards = result.value[0]["hasMultiTokenRewards"];
-  //     const name = result.value[0]["name"];
-  //     const category = parseInt(result.value[0]["category"]);
-  //     const price = parseFloat(formatEther(result.value[0]["price"]));
-  //     const rewardBalance = parseFloat(
-  //       formatEther(result.value[0]["rewardBalance"])
-  //     );
-  //     const stakingBalance = parseFloat(
-  //       formatEther(result.value[0]["stakingBalance"])
-  //     );
-  //     const stakingApr = parseFloat(formatEther(result.value[0]["stakingApr"]));
-  //     const rewardToken = result.value[0]["rewardToken"];
-  //     const admin = result.value[0]["admin"];
-  //     const devDepositFee = parseFloat(
-  //       formatEther(result.value[0]["fees"]["devDepositFee"])
-  //     );
-  //     const devWithdrawFee = parseFloat(
-  //       formatEther(result.value[0]["fees"]["devWithdrawFee"])
-  //     );
-  //     const devStakeFee = parseFloat(
-  //       formatEther(result.value[0]["fees"]["devStakeFee"])
-  //     );
-  //     const devUnstakeFee = parseFloat(
-  //       formatEther(result.value[0]["fees"]["devUnstakeFee"])
-  //     );
-  //     const adminStakeFee = parseFloat(
-  //       formatEther(result.value[0]["fees"]["adminStakeFee"])
-  //     );
-  //     const adminUnstakeFee = parseFloat(
-  //       formatEther(result.value[0]["fees"]["adminUnstakeFee"])
-  //     );
-  //     const timestampAdded = parseInt(result.value[0]["timestampAdded"]);
-  //     const timestampLastUpdated = parseInt(
-  //       result.value[0]["timestampLastUpdated"]
-  //     );
-  //     tokensData[index] = {
-  //       address: address,
-  //       isActive: isActive,
-  //       isVerified: isVerified,
-  //       hasMultiTokenRewards: hasMultiTokenRewards,
-  //       name: name,
-  //       category: category,
-  //       price: price,
-  //       rewardBalance: rewardBalance,
-  //       stakingBalance: stakingBalance,
-  //       stakingApr: stakingApr,
-  //       rewardToken: rewardToken,
-  //       admin: admin,
-  //       devDepositFee: devDepositFee,
-  //       devWithdrawFee: devWithdrawFee,
-  //       devStakeFee: devStakeFee,
-  //       devUnstakeFee: devUnstakeFee,
-  //       adminStakeFee: adminStakeFee,
-  //       adminUnstakeFee: adminUnstakeFee,
-  //       timestampAdded: timestampAdded,
-  //       timestampLastUpdated: timestampLastUpdated,
-  //     };
-  //   }
-  //   if (result?.error)
-  //     console.error(tokensAddresses[index], result.error.message);
-  // });
+  // useEffect(() => {
+  //   if (isInitialized)
+  //     (async () => {
+  //       const options: {
+  //         abi: any[];
+  //         chain: "bsc" | "bsc testnet";
+  //         address: string;
+  //         function_name: string;
+  //       } = {
+  //         abi: farmAbi,
+  //         chain: farmChain(),
+  //         address: farmAddress(),
+  //         function_name: "getTokens",
+  //       };
+  //       const response = await Moralis.Web3API.native.runContractFunction(
+  //         options
+  //       );
+  //       setTokens(response as unknown as string[]);
+  //     })();
+  // }, [isInitialized]);
 
   return tokensData;
 };
+
+// export const useTokensData = (tokensAddresses: string[]): TokenData[] | [] => {
+//   var tokensData: TokenData[] | [] = [];
+
+//   // const contract = useContract();
+//   // const calls =
+//   //   tokensAddresses.map((tokenAddress) => ({
+//   //     contract: contract,
+//   //     method: "getTokenData",
+//   //     args: [tokenAddress],
+//   //   })) ?? [];
+//   // const results = useCalls(calls) ?? [];
+
+//   // results.forEach((result, index) => {
+//   //   if (result?.value) {
+//   //     // console.log(result.value[0]);
+//   //     const address = calls[index]["args"][0];
+//   //     const isActive = result.value[0]["isActive"];
+//   //     const isVerified = result.value[0]["isVerified"];
+//   //     const hasMultiTokenRewards = result.value[0]["hasMultiTokenRewards"];
+//   //     const name = result.value[0]["name"];
+//   //     const category = parseInt(result.value[0]["category"]);
+//   //     const price = parseFloat(formatEther(result.value[0]["price"]));
+//   //     const rewardBalance = parseFloat(
+//   //       formatEther(result.value[0]["rewardBalance"])
+//   //     );
+//   //     const stakingBalance = parseFloat(
+//   //       formatEther(result.value[0]["stakingBalance"])
+//   //     );
+//   //     const stakingApr = parseFloat(formatEther(result.value[0]["stakingApr"]));
+//   //     const rewardToken = result.value[0]["rewardToken"];
+//   //     const admin = result.value[0]["admin"];
+//   //     const devDepositFee = parseFloat(
+//   //       formatEther(result.value[0]["fees"]["devDepositFee"])
+//   //     );
+//   //     const devWithdrawFee = parseFloat(
+//   //       formatEther(result.value[0]["fees"]["devWithdrawFee"])
+//   //     );
+//   //     const devStakeFee = parseFloat(
+//   //       formatEther(result.value[0]["fees"]["devStakeFee"])
+//   //     );
+//   //     const devUnstakeFee = parseFloat(
+//   //       formatEther(result.value[0]["fees"]["devUnstakeFee"])
+//   //     );
+//   //     const adminStakeFee = parseFloat(
+//   //       formatEther(result.value[0]["fees"]["adminStakeFee"])
+//   //     );
+//   //     const adminUnstakeFee = parseFloat(
+//   //       formatEther(result.value[0]["fees"]["adminUnstakeFee"])
+//   //     );
+//   //     const timestampAdded = parseInt(result.value[0]["timestampAdded"]);
+//   //     const timestampLastUpdated = parseInt(
+//   //       result.value[0]["timestampLastUpdated"]
+//   //     );
+//   //     tokensData[index] = {
+//   //       address: address,
+//   //       isActive: isActive,
+//   //       isVerified: isVerified,
+//   //       hasMultiTokenRewards: hasMultiTokenRewards,
+//   //       name: name,
+//   //       category: category,
+//   //       price: price,
+//   //       rewardBalance: rewardBalance,
+//   //       stakingBalance: stakingBalance,
+//   //       stakingApr: stakingApr,
+//   //       rewardToken: rewardToken,
+//   //       admin: admin,
+//   //       devDepositFee: devDepositFee,
+//   //       devWithdrawFee: devWithdrawFee,
+//   //       devStakeFee: devStakeFee,
+//   //       devUnstakeFee: devUnstakeFee,
+//   //       adminStakeFee: adminStakeFee,
+//   //       adminUnstakeFee: adminUnstakeFee,
+//   //       timestampAdded: timestampAdded,
+//   //       timestampLastUpdated: timestampLastUpdated,
+//   //     };
+//   //   }
+//   //   if (result?.error)
+//   //     console.error(tokensAddresses[index], result.error.message);
+//   // });
+
+//   return tokensData;
+// };
 
 export const useTokensStakerData = (
   tokensAddresses: string[],
