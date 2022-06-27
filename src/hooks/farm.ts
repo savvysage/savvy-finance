@@ -69,7 +69,7 @@ export const useTokens = (): string[] => {
     if (isInitialized)
       (async () => {
         const options: {
-          abi: any[];
+          abi: object[];
           chain: "bsc" | "bsc testnet";
           address: string;
           function_name: string;
