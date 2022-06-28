@@ -69,7 +69,7 @@ export const useTokens = (): string[] => {
     if (isInitialized)
       (async () => {
         const options: {
-          abi: object[];
+          abi: {}[];
           chain: "bsc" | "bsc testnet";
           address: string;
           function_name: string;
@@ -89,32 +89,35 @@ export const useTokens = (): string[] => {
   return tokens;
 };
 
-export const useTokensData = (tokensAddresses: string[]): TokenData[] | [] => {
-  const [tokensData, setTokensData] = useState<TokenData[]>([]);
+export const useTokenData = () => {
+  const [tokenData, setTokenData] = useState<[]>([]);
   const { Moralis, isInitialized } = useMoralis();
 
-  // useEffect(() => {
-  //   if (isInitialized)
-  //     (async () => {
-  //       const options: {
-  //         abi: any[];
-  //         chain: "bsc" | "bsc testnet";
-  //         address: string;
-  //         function_name: string;
-  //       } = {
-  //         abi: farmAbi,
-  //         chain: farmChain(),
-  //         address: farmAddress(),
-  //         function_name: "getTokens",
-  //       };
-  //       const response = await Moralis.Web3API.native.runContractFunction(
-  //         options
-  //       );
-  //       setTokens(response as unknown as string[]);
-  //     })();
-  // }, [isInitialized]);
+  const getTokenData = (tokenAddress: string) => {
+    if (isInitialized)
+      (async () => {
+        const options: {
+          abi: {}[];
+          chain: "bsc" | "bsc testnet";
+          address: string;
+          function_name: string;
+          params: {};
+        } = {
+          abi: farmAbi,
+          chain: farmChain,
+          address: farmAddress,
+          function_name: "getTokenData",
+          params: { _token: tokenAddress },
+        };
+        const response = await Moralis.Web3API.native.runContractFunction(
+          options
+        );
+        setTokenData(response as unknown as []);
+      })();
+    return tokenData;
+  };
 
-  return tokensData;
+  return getTokenData;
 };
 
 // export const useTokensData = (tokensAddresses: string[]): TokenData[] | [] => {
