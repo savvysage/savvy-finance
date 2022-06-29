@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useMoralis } from "react-moralis";
 import axios from "axios";
 import SavvyFinanceFarm from "../back_end_build/contracts/SavvyFinanceFarm.json";
@@ -90,32 +90,35 @@ export const useTokens = (): string[] => {
 };
 
 export const useTokenData = () => {
-  const [tokenData, setTokenData] = useState<[]>([]);
+  const tokenData = useRef<[]>([]);
   const { Moralis, isInitialized } = useMoralis();
 
-  const getTokenData = (tokenAddress: string) => {
-    if (isInitialized)
-      (async () => {
-        const options: {
-          abi: {}[];
-          chain: "bsc" | "bsc testnet";
-          address: string;
-          function_name: string;
-          params: {};
-        } = {
-          abi: farmAbi,
-          chain: farmChain,
-          address: farmAddress,
-          function_name: "getTokenData",
-          params: { _token: tokenAddress },
-        };
-        const response = await Moralis.Web3API.native.runContractFunction(
-          options
-        );
-        setTokenData(response as unknown as []);
-      })();
-    return tokenData;
-  };
+  const getTokenData = useCallback(
+    (tokenAddress: string) => {
+      if (isInitialized)
+        (async () => {
+          const options: {
+            abi: {}[];
+            chain: "bsc" | "bsc testnet";
+            address: string;
+            function_name: string;
+            params: {};
+          } = {
+            abi: farmAbi,
+            chain: farmChain,
+            address: farmAddress,
+            function_name: "getTokenData",
+            params: { _token: tokenAddress },
+          };
+          const response = await Moralis.Web3API.native.runContractFunction(
+            options
+          );
+          tokenData.current = response as unknown as [];
+        })();
+      return tokenData.current;
+    },
+    [isInitialized]
+  );
 
   return getTokenData;
 };

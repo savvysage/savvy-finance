@@ -1,5 +1,5 @@
 Moralis.settings.setAPIRateLimit({
-  anonymous: 50,
-  authenticated: 50,
+  anonymous: 60,
+  authenticated: 60,
   windowMs: 60000,
 });

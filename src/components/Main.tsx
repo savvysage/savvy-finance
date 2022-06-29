@@ -42,9 +42,9 @@ export const Main = () => {
   const getTokenData = useTokenData();
 
   if (tokensAddresses.length > 0) {
-    tokensAddresses.forEach((tokensAddress) => {
-      console.log(tokensAddress);
-      console.log(getTokenData(tokensAddress));
+    tokensAddresses.forEach((tokenAddress) => {
+      // console.log(tokenAddress);
+      console.log(getTokenData(tokenAddress));
     });
   }
 
