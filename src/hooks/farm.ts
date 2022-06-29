@@ -114,6 +114,8 @@ export const useTokenData = () => {
             options
           );
           tokenData.current = response as unknown as [];
+          console.log(tokenData.current);
+          console.log(tokenData);
         })();
       return tokenData.current;
     },
