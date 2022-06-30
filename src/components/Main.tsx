@@ -7,8 +7,8 @@ import { useMoralis } from "react-moralis";
 import {
   TokenData,
   TokenStakerData,
-  useTokensData,
   useTokens,
+  useTokensData,
 } from "../hooks/farm";
 
 export type Token = TokenData & {
@@ -38,16 +38,16 @@ export const Main = () => {
     logout: disconnectWallet,
   } = useMoralis();
 
-  const tokensAddresses = useTokens();
-  const tokensData = useTokensData(tokensAddresses);
+  const tokenAddresses = useTokens();
+  const tokensData = useTokensData(tokenAddresses);
   console.log(tokensData);
 
-  if (tokensAddresses.length > 0) {
-    tokensAddresses.forEach((tokenAddress) => {
-      // console.log(getTokenData(tokenAddress));
-      // getTokenData(tokenAddress);
-    });
-  }
+  // if (tokensAddresses.length > 0) {
+  //   tokensAddresses.forEach((tokenAddress) => {
+  //     // console.log(getTokenData(tokenAddress));
+  //     // getTokenData(tokenAddress);
+  //   });
+  // }
 
   // const tokensAddresses: string[] = svfFarm.useTokens();
   // const tokensData: svfFarm.TokenData[] =
