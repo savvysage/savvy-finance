@@ -43,79 +43,47 @@ export const Main = () => {
   } = useMoralis();
 
   const tokenAddresses = useTokens();
-  const tokensData = useTokensData(tokenAddresses);
-  const tokensStakerData = useTokensStakerData(
-    tokenAddresses,
-    walletAddress ?? zeroAddress
-  );
-  console.log(tokensStakerData);
+  const tokensData: { [tokenAddress: string]: TokenData } =
+    useTokensData(tokenAddresses);
+  const tokensStakerData: { [tokenAddress: string]: TokenStakerData } =
+    useTokensStakerData(tokenAddresses, walletAddress ?? zeroAddress);
+  // console.log(
+  //   tokenAddresses.length,
+  //   Object.keys(tokensData).length,
+  //   Object.keys(tokensStakerData).length
+  // );
 
-  // if (tokensAddresses.length > 0) {
-  //   tokensAddresses.forEach((tokenAddress) => {
-  //     // console.log(getTokenData(tokenAddress));
-  //     // getTokenData(tokenAddress);
-  //   });
-  // }
-
-  // const tokensAddresses: string[] = svfFarm.useTokens();
-  // const tokensData: svfFarm.TokenData[] =
-  //   svfFarm.useTokensData(tokensAddresses);
-  // const tokensStakerData: svfFarm.TokenStakerData[] =
-  //   svfFarm.useTokensStakerData(
-  //     tokensAddresses,
-  //     walletAddress ?? constants.AddressZero
-  //   );
-
-  // if (tokensAddresses.length !== 0)
-  //   if (
-  //     tokensData.length === tokensAddresses.length &&
-  //     tokensStakerData.length === tokensData.length
-  //   ) {
-  //     tokensAddresses.forEach((tokenAddress, index) => {
-  //       tokens[index] = {
-  //         address: tokensData[index].address,
-  //         isActive: tokensData[index].isActive,
-  //         isVerified: tokensData[index].isVerified,
-  //         hasMultiTokenRewards: tokensData[index].hasMultiTokenRewards,
-  //         name: tokensData[index].name,
-  //         category: tokensData[index].category,
-  //         price: tokensData[index].price,
-  //         rewardBalance: tokensData[index].rewardBalance,
-  //         stakingBalance: tokensData[index].stakingBalance,
-  //         stakingApr: tokensData[index].stakingApr,
-  //         rewardToken: tokensData[index].rewardToken,
-  //         admin: tokensData[index].admin,
-  //         devDepositFee: tokensData[index].devDepositFee,
-  //         devWithdrawFee: tokensData[index].devWithdrawFee,
-  //         devStakeFee: tokensData[index].devStakeFee,
-  //         devUnstakeFee: tokensData[index].devUnstakeFee,
-  //         adminStakeFee: tokensData[index].adminStakeFee,
-  //         adminUnstakeFee: tokensData[index].adminUnstakeFee,
-  //         timestampAdded: tokensData[index].timestampAdded,
-  //         timestampLastUpdated: tokensData[index].timestampLastUpdated,
-  //         icon:
-  //           tokensData[index].category === 0
-  //             ? [
-  //                 process.env.PUBLIC_URL +
-  //                   `/icons/${tokensData[index].name.toLowerCase()}.png`,
-  //               ]
-  //             : [
-  //                 process.env.PUBLIC_URL +
-  //                   `/icons/${tokensData[index].name
-  //                     .split("-")[0]
-  //                     .toLowerCase()}.png`,
-  //                 process.env.PUBLIC_URL +
-  //                   `/icons/${tokensData[index].name
-  //                     .split("-")[1]
-  //                     .toLowerCase()}.png`,
-  //               ],
-  //         stakerData: tokensStakerData[index],
-  //       };
-  //     });
-  //     tokensAreUpdated = true;
-  //     localStorage.setItem("tokens", JSON.stringify(tokens));
-  //   }
-
+  if (tokenAddresses.length > 0)
+    if (
+      tokenAddresses.length === Object.keys(tokensData).length &&
+      tokenAddresses.length === Object.keys(tokensStakerData).length
+    ) {
+      tokenAddresses.forEach((tokenAddress, index) => {
+        tokens[index] = {
+          ...tokensData[tokenAddress],
+          icon:
+            tokensData[tokenAddress].category === 0
+              ? [
+                  process.env.PUBLIC_URL +
+                    `/icons/${tokensData[tokenAddress].name.toLowerCase()}.png`,
+                ]
+              : [
+                  process.env.PUBLIC_URL +
+                    `/icons/${tokensData[tokenAddress].name
+                      .split("-")[0]
+                      .toLowerCase()}.png`,
+                  process.env.PUBLIC_URL +
+                    `/icons/${tokensData[tokenAddress].name
+                      .split("-")[1]
+                      .toLowerCase()}.png`,
+                ],
+          stakerData: tokensStakerData[tokenAddress],
+        };
+      });
+      tokensAreUpdated = true;
+      localStorage.setItem("tokens", JSON.stringify(tokens));
+    }
+  console.log(tokens);
   return (
     <Stack spacing={2}>
       <TokensTable tokens={tokens} tokensAreUpdated={tokensAreUpdated} />
