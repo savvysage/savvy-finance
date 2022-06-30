@@ -7,7 +7,7 @@ import { useMoralis } from "react-moralis";
 import {
   TokenData,
   TokenStakerData,
-  useTokenData,
+  useTokensData,
   useTokens,
 } from "../hooks/farm";
 
@@ -39,12 +39,13 @@ export const Main = () => {
   } = useMoralis();
 
   const tokensAddresses = useTokens();
-  const getTokenData = useTokenData();
+  const tokensData = useTokensData(tokensAddresses);
+  console.log(tokensData);
 
   if (tokensAddresses.length > 0) {
     tokensAddresses.forEach((tokenAddress) => {
-      // console.log(tokenAddress);
-      console.log(getTokenData(tokenAddress));
+      // console.log(getTokenData(tokenAddress));
+      // getTokenData(tokenAddress);
     });
   }
 

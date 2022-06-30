@@ -89,40 +89,103 @@ export const useTokens = (): string[] => {
   return tokens;
 };
 
-export const useTokenData = () => {
-  const tokenData = useRef<[]>([]);
-  const { Moralis, isInitialized } = useMoralis();
+export const useTokensData = (tokenAddresses: string[]): {} => {
+  const [tokensData, setTokensData] = useState<{}>({});
+  const { Moralis } = useMoralis();
 
-  const getTokenData = useCallback(
-    (tokenAddress: string) => {
-      if (isInitialized)
-        (async () => {
-          const options: {
-            abi: {}[];
-            chain: "bsc" | "bsc testnet";
-            address: string;
-            function_name: string;
-            params: {};
-          } = {
-            abi: farmAbi,
-            chain: farmChain,
-            address: farmAddress,
-            function_name: "getTokenData",
-            params: { _token: tokenAddress },
-          };
-          const response = await Moralis.Web3API.native.runContractFunction(
-            options
-          );
-          tokenData.current = response as unknown as [];
-          console.log(tokenData.current);
-          console.log(tokenData);
-        })();
-      return tokenData.current;
-    },
-    [isInitialized]
-  );
+  useEffect(() => {
+    if (tokenAddresses.length > 0)
+      tokenAddresses.forEach(async (tokenAddress) => {
+        const options: {
+          abi: {}[];
+          chain: "bsc" | "bsc testnet";
+          address: string;
+          function_name: string;
+          params: {};
+        } = {
+          abi: farmAbi,
+          chain: farmChain,
+          address: farmAddress,
+          function_name: "getTokenData",
+          params: { _token: tokenAddress },
+        };
+        const response = await Moralis.Web3API.native.runContractFunction(
+          options
+        );
+        const tokenData: TokenData = {
+          address: tokenAddress,
+          isActive: response[0] === "true",
+          isVerified: response[1] === "true",
+          hasMultiTokenRewards: response[2] === "true",
+          name: response[3],
+          category: parseInt(response[4]),
+          price: parseFloat(Moralis.Units.FromWei(response[5])),
+          rewardBalance: parseFloat(Moralis.Units.FromWei(response[6])),
+          stakingBalance: parseFloat(Moralis.Units.FromWei(response[7])),
+          stakingApr: parseFloat(Moralis.Units.FromWei(response[8])),
+          rewardToken: response[9],
+          admin: response[10],
+          devDepositFee: parseFloat(Moralis.Units.FromWei(response[11][0])),
+          devWithdrawFee: parseFloat(Moralis.Units.FromWei(response[11][1])),
+          devStakeFee: parseFloat(Moralis.Units.FromWei(response[11][2])),
+          devUnstakeFee: parseFloat(Moralis.Units.FromWei(response[11][3])),
+          adminStakeFee: parseFloat(Moralis.Units.FromWei(response[11][4])),
+          adminUnstakeFee: parseFloat(Moralis.Units.FromWei(response[11][5])),
+          timestampAdded: parseInt(Moralis.Units.FromWei(response[12])),
+          timestampLastUpdated: parseInt(Moralis.Units.FromWei(response[13])),
+        };
+        // const tokenData: TokenData = {
+        //   address: tokenAddress,
+        //   isActive: response["isActive"],
+        //   isVerified: response["isVerified"],
+        //   hasMultiTokenRewards: response["hasMultiTokenRewards"],
+        //   name: response["name"],
+        //   category: parseInt(response["category"]),
+        //   price: parseFloat(Moralis.Units.FromWei(response["price"])),
+        //   rewardBalance: parseFloat(
+        //     Moralis.Units.FromWei(response["rewardBalance"])
+        //   ),
+        //   stakingBalance: parseFloat(
+        //     Moralis.Units.FromWei(response["stakingBalance"])
+        //   ),
+        //   stakingApr: parseFloat(
+        //     Moralis.Units.FromWei(response["stakingApr"])
+        //   ),
+        //   rewardToken: response["rewardToken"],
+        //   admin: response["admin"],
+        //   devDepositFee: parseFloat(
+        //     Moralis.Units.FromWei(response["fees"]["devDepositFee"])
+        //   ),
+        //   devWithdrawFee: parseFloat(
+        //     Moralis.Units.FromWei(response["fees"]["devWithdrawFee"])
+        //   ),
+        //   devStakeFee: parseFloat(
+        //     Moralis.Units.FromWei(response["fees"]["devStakeFee"])
+        //   ),
+        //   devUnstakeFee: parseFloat(
+        //     Moralis.Units.FromWei(response["fees"]["devUnstakeFee"])
+        //   ),
+        //   adminStakeFee: parseFloat(
+        //     Moralis.Units.FromWei(response["fees"]["adminStakeFee"])
+        //   ),
+        //   adminUnstakeFee: parseFloat(
+        //     Moralis.Units.FromWei(response["fees"]["adminUnstakeFee"])
+        //   ),
+        //   timestampAdded: parseInt(
+        //     Moralis.Units.FromWei(response["timestampAdded"])
+        //   ),
+        //   timestampLastUpdated: parseInt(
+        //     Moralis.Units.FromWei(response["timestampLastUpdated"])
+        //   ),
+        // };
+        setTokensData((prevTokensData) => ({
+          ...prevTokensData,
+          [tokenAddress]: tokenData,
+        }));
+      });
+  }, [tokenAddresses]);
 
-  return getTokenData;
+  return tokensData;
 };
 
 // export const useTokensData = (tokensAddresses: string[]): TokenData[] | [] => {
