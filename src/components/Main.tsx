@@ -83,7 +83,8 @@ export const Main = () => {
       tokensAreUpdated = true;
       localStorage.setItem("tokens", JSON.stringify(tokens));
     }
-  console.log(tokens);
+  // console.log(tokens);
+
   return (
     <Stack spacing={2}>
       <TokensTable tokens={tokens} tokensAreUpdated={tokensAreUpdated} />
