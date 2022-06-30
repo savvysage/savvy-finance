@@ -9,7 +9,11 @@ import {
   TokenStakerData,
   useTokens,
   useTokensData,
+  useTokensStakerData,
 } from "../hooks/farm";
+import helperConfig from "../helper-config.json";
+
+const zeroAddress = helperConfig.zeroAddress;
 
 export type Token = TokenData & {
   icon: string[];
@@ -40,7 +44,11 @@ export const Main = () => {
 
   const tokenAddresses = useTokens();
   const tokensData = useTokensData(tokenAddresses);
-  console.log(tokensData);
+  const tokensStakerData = useTokensStakerData(
+    tokenAddresses,
+    walletAddress ?? zeroAddress
+  );
+  console.log(tokensStakerData);
 
   // if (tokensAddresses.length > 0) {
   //   tokensAddresses.forEach((tokenAddress) => {
