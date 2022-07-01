@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
+import { farmChain } from "../hooks/farm";
 import { Token } from "./Main";
 
 export const AddTokenForm = (props: {
@@ -18,6 +19,7 @@ export const AddTokenForm = (props: {
 }) => {
   const { tokens, tokensAreUpdated } = props;
   const {
+    Moralis,
     chainId,
     account: walletAddress,
     isAuthenticated: walletIsConnected,
@@ -100,6 +102,26 @@ export const AddTokenForm = (props: {
     setAdminUnstakeFee(newAdminUnstakeFee);
   };
 
+  const setNameFromAddress = (address: string) => {
+    const ethers = Moralis.web3Library;
+    if (ethers.utils.isAddress(address)) {
+      if (category === "0")
+        (async () => {
+          setName(
+            (
+              await Moralis.Web3API.token.getTokenMetadata({
+                chain: farmChain,
+                addresses: [address],
+              })
+            )[0].symbol
+          );
+        })();
+    }
+  };
+  useEffect(() => {
+    if (address) setNameFromAddress(address);
+  }, [address, category]);
+
   return (
     <React.Fragment>
       <Grid container spacing={3}>
@@ -181,7 +203,7 @@ export const AddTokenForm = (props: {
             >
               <MenuItem value="default">SAME AS TOKEN</MenuItem>
               {tokens.map((token) =>
-                token.admin === walletAddress ? (
+                token.admin.toLowerCase() === walletAddress?.toLowerCase() ? (
                   <MenuItem key={token.name} value={token.address}>
                     {token.name}
                   </MenuItem>

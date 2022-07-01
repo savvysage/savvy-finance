@@ -1,9 +1,6 @@
-import { constants } from "ethers";
+import { useMoralis } from "react-moralis";
 import { Stack } from "@mui/material";
 import { TokensTable } from "./TokensTable";
-import { getContractAddress } from "../common";
-import tokensJSON from "../tokens.json";
-import { useMoralis } from "react-moralis";
 import {
   TokenData,
   TokenStakerData,
@@ -11,6 +8,7 @@ import {
   useTokensData,
   useTokensStakerData,
 } from "../hooks/farm";
+import tokensJSON from "../tokens.json";
 import helperConfig from "../helper-config.json";
 
 const zeroAddress = helperConfig.zeroAddress;

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import axios from "axios";
 import SavvyFinanceFarm from "../back_end_build/contracts/SavvyFinanceFarm.json";
