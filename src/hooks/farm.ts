@@ -79,10 +79,10 @@ export const useTokens = (): string[] => {
           address: farmAddress,
           function_name: "getTokens",
         };
-        const response = await Moralis.Web3API.native.runContractFunction(
+        const response = (await Moralis.Web3API.native.runContractFunction(
           options
-        );
-        setTokens(response as unknown as string[]);
+        )) as unknown as string[];
+        setTokens(response);
       })();
   }, [isInitialized]);
 
@@ -109,14 +109,14 @@ export const useTokensData = (tokenAddresses: string[]): {} => {
           function_name: "getTokenData",
           params: { _token: tokenAddress },
         };
-        const response = await Moralis.Web3API.native.runContractFunction(
+        const response = (await Moralis.Web3API.native.runContractFunction(
           options
-        );
+        )) as unknown as any[];
         const tokenData: TokenData = {
           address: tokenAddress,
-          isActive: response[0] === "true",
-          isVerified: response[1] === "true",
-          hasMultiTokenRewards: response[2] === "true",
+          isActive: response[0],
+          isVerified: response[1],
+          hasMultiTokenRewards: response[2],
           name: response[3],
           category: parseInt(response[4]),
           price: parseFloat(Moralis.Units.FromWei(response[5])),
