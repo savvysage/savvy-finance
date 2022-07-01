@@ -29,16 +29,40 @@ export const AddTokenForm = (props: {
 
   // const { notifications } = useNotifications();
 
+  const setNameFromAddress = (address: string) => {
+    const ethers = Moralis.web3Library;
+    if (ethers.utils.isAddress(address))
+      (async () => {
+        const addressSymbol = (
+          await Moralis.Web3API.token.getTokenMetadata({
+            chain: farmChain,
+            addresses: [address],
+          })
+        )[0].symbol;
+        if (addressSymbol !== "Cake-LP") {
+          setCategory("0");
+          setName(addressSymbol);
+        } else {
+          setCategory("1");
+          setName("NAME1-NAME2");
+          setName1("");
+          setName2("");
+        }
+      })();
+  };
+
   const [address, setAddress] = useState("");
   const handleChangeAddress = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newAddress = event.target.value;
     setAddress(newAddress);
   };
+  useEffect(() => {
+    if (address) setNameFromAddress(address);
+  }, [address]);
 
   const [category, setCategory] = useState("0");
   const handleChangeCategory = (event: SelectChangeEvent) => {
     const newCategory = event.target.value;
-    setCategory(newCategory);
     if (newCategory === "0") setName("");
     if (newCategory === "1")
       setName(
@@ -46,6 +70,8 @@ export const AddTokenForm = (props: {
           "-" +
           (name2 !== "" ? name2 : "NAME2")
       );
+    setNameFromAddress(address);
+    setCategory(newCategory);
   };
 
   const [name, setName] = useState("");
@@ -101,26 +127,6 @@ export const AddTokenForm = (props: {
     const newAdminUnstakeFee = event.target.value;
     setAdminUnstakeFee(newAdminUnstakeFee);
   };
-
-  const setNameFromAddress = (address: string) => {
-    const ethers = Moralis.web3Library;
-    if (ethers.utils.isAddress(address)) {
-      if (category === "0")
-        (async () => {
-          setName(
-            (
-              await Moralis.Web3API.token.getTokenMetadata({
-                chain: farmChain,
-                addresses: [address],
-              })
-            )[0].symbol
-          );
-        })();
-    }
-  };
-  useEffect(() => {
-    if (address) setNameFromAddress(address);
-  }, [address, category]);
 
   return (
     <React.Fragment>
