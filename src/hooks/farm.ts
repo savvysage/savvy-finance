@@ -172,7 +172,7 @@ export const useTokensStakerData = (
   stakerAddress: string
 ): {} => {
   const [tokensStakerData, setTokensStakerData] = useState<{}>({});
-  const { Moralis } = useMoralis();
+  const { Moralis, isAuthenticated: walletIsConnected } = useMoralis();
 
   useEffect(() => {
     if (tokenAddresses.length > 0)
@@ -196,7 +196,7 @@ export const useTokensStakerData = (
         )) as unknown as any[];
         // prettier-ignore
         // @ts-ignore
-        const walletBalance = (await Moralis.Web3API.account.getTokenBalances({ chain: farmChain, token_addresses: [tokenAddress] }))[0].balance;
+        const walletBalance = walletIsConnected ? (await Moralis.Web3API.account.getTokenBalances({ chain: farmChain, token_addresses: [tokenAddress] }))[0].balance : 0;
         const tokenStakerData: TokenStakerData = {
           walletBalance: parseFloat(Moralis.Units.FromWei(walletBalance)),
           rewardBalance: parseFloat(Moralis.Units.FromWei(response[0])),
