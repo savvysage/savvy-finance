@@ -1,4 +1,9 @@
 import brownieConfig from "./brownie-config.json";
+import helperConfig from "./helper-config.json";
+
+export const defaultChainId = helperConfig.defaultChainId;
+export const defaultChain = helperConfig.networks[defaultChainId][0];
+// console.log(defaultChainId, defaultChain);
 
 export const shortenAddress = (address: string) => {
   return (
@@ -33,7 +38,23 @@ export const calculateStakingReward = (
 
 export const getContractAddress = (
   contractName: string,
-  networkName: string = "bsc-test"
-): string => {
+  networkName: string = defaultChain
+): string | undefined => {
   return brownieConfig["networks"][networkName]["contracts"][contractName];
+};
+
+export const getContractName = (
+  contractAddress: string,
+  networkName: string = defaultChain
+): string | undefined => {
+  var contractName: string | undefined;
+
+  const networkContracts = brownieConfig["networks"][networkName]["contracts"];
+  Object.entries(networkContracts).forEach(
+    ([contractNamex, contractAddressx]) => {
+      if (contractAddressx === contractAddress) contractName = contractNamex;
+    }
+  );
+
+  return contractName;
 };

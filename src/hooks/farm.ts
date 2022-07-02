@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import axios from "axios";
+import { getContractAddress } from "../common";
 import SavvyFinanceFarm from "../back_end_build/contracts/SavvyFinanceFarm.json";
 import deploymentsMap from "../back_end_build/deployments/map.json";
 import helperConfig from "../helper-config.json";
@@ -112,6 +113,26 @@ export const useTokensData = (tokenAddresses: string[]): {} => {
         const response = (await Moralis.Web3API.native.runContractFunction(
           options
         )) as unknown as any[];
+        //////////
+        /**
+         * Get token price from PancakeSwap.
+         * If farm on testnet, mainnet price.
+         */
+        // const tokenSlug =
+        //   parseInt(response[4]) === 0
+        //     ? `${response[3].toLowerCase()}_token`
+        //     : `${response[3].toLowerCase().replace("-", "_")}_lp_token`;
+        // const tokenMainnetAddress = !farmChain.includes("test")
+        //   ? tokenAddress
+        //   : getContractAddress(tokenSlug, "bsc-main");
+        // const price = (
+        //   await Moralis.Web3API.token.getTokenPrice({
+        //     chain: "bsc",
+        //     exchange: "pancakeswap-v2",
+        //     address: tokenMainnetAddress ?? "",
+        //   })
+        // ).usdPrice;
+        //////////
         const tokenData: TokenData = {
           address: tokenAddress,
           isActive: response[0],
@@ -119,6 +140,7 @@ export const useTokensData = (tokenAddresses: string[]): {} => {
           hasMultiTokenRewards: response[2],
           name: response[3],
           category: parseInt(response[4]),
+          // price: price,
           price: parseFloat(Moralis.Units.FromWei(response[5])),
           rewardBalance: parseFloat(Moralis.Units.FromWei(response[6])),
           stakingBalance: parseFloat(Moralis.Units.FromWei(response[7])),

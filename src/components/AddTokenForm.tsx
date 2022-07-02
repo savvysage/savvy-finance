@@ -43,6 +43,12 @@ export const AddTokenForm = (props: {
           setCategory("0");
           setName(addressSymbol);
         } else {
+          const addressToken1 = await Moralis.Web3API.token.getTokenIdMetadata({
+            chain: farmChain,
+            address: address,
+            token_id: "0",
+          });
+          console.log(addressToken1);
           setCategory("1");
           setName("NAME1-NAME2");
           setName1("");
