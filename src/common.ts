@@ -5,6 +5,9 @@ export const defaultChainId = helperConfig.defaultChainId;
 export const defaultChain = helperConfig.networks[defaultChainId][0];
 // console.log(defaultChainId, defaultChain);
 
+export const delay = (milliseconds: number) =>
+  new Promise((resolve) => setTimeout(resolve, milliseconds));
+
 export const shortenAddress = (address: string) => {
   return (
     address.substring(0, 6) + "..." + address.substring(address.length - 4)
