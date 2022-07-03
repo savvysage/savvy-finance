@@ -117,7 +117,7 @@ export const useTokensData = (tokenAddresses: string[]): {} => {
         //////////
         /**
          * Get token price from PancakeSwap.
-         * If farm on testnet, mainnet price.
+         * If farm on testnet, get mainnet price.
          */
         const tokenSlug =
           parseInt(response[4]) === 0
@@ -194,9 +194,15 @@ export const useTokensStakerData = (
         const response = (await Moralis.Web3API.native.runContractFunction(
           options
         )) as unknown as any[];
-        // prettier-ignore
-        // @ts-ignore
-        const walletBalance = walletIsConnected ? (await Moralis.Web3API.account.getTokenBalances({ chain: farmChain, token_addresses: [tokenAddress] }))[0].balance : 0;
+        const walletBalance = !walletIsConnected
+          ? "0"
+          : (
+              await Moralis.Web3API.account.getTokenBalances({
+                chain: farmChain,
+                address: stakerAddress,
+                token_addresses: [tokenAddress],
+              })
+            )[0].balance;
         const tokenStakerData: TokenStakerData = {
           walletBalance: parseFloat(Moralis.Units.FromWei(walletBalance)),
           rewardBalance: parseFloat(Moralis.Units.FromWei(response[0])),

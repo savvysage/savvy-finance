@@ -62,18 +62,21 @@ export const Main = () => {
           icon:
             tokensData[tokenAddress].category === 0
               ? [
-                  process.env.PUBLIC_URL +
-                    `/icons/${tokensData[tokenAddress].name.toLowerCase()}.png`,
+                  `${process.env.PUBLIC_URL}/icons/${tokensData[
+                    tokenAddress
+                  ].name.toLowerCase()}.png`,
                 ]
               : [
-                  process.env.PUBLIC_URL +
-                    `/icons/${tokensData[tokenAddress].name
-                      .split("-")[0]
-                      .toLowerCase()}.png`,
-                  process.env.PUBLIC_URL +
-                    `/icons/${tokensData[tokenAddress].name
-                      .split("-")[1]
-                      .toLowerCase()}.png`,
+                  `${process.env.PUBLIC_URL}/icons/${tokensData[
+                    tokenAddress
+                  ].name
+                    .split("-")[0]
+                    .toLowerCase()}.png`,
+                  `${process.env.PUBLIC_URL}/icons/${tokensData[
+                    tokenAddress
+                  ].name
+                    .split("-")[1]
+                    .toLowerCase()}.png`,
                 ],
           stakerData: tokensStakerData[tokenAddress],
         };
