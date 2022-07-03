@@ -1,5 +1,5 @@
 import { Box, Container, CssBaseline, Stack } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useReducer } from "react";
 import { useMoralis } from "react-moralis";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
@@ -7,15 +7,23 @@ import { Main } from "./components/Main";
 import { ResponsiveAppBar } from "./components/ResponsiveAppBar";
 
 function App() {
-  const { enableWeb3, isWeb3Enabled, isWeb3EnableLoading } = useMoralis();
+  const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
+  const { Moralis, enableWeb3, isWeb3Enabled, isWeb3EnableLoading } =
+    useMoralis();
 
   useEffect(() => {
-    const connectorId = localStorage.getItem("connectorId");
-    if (!isWeb3Enabled && !isWeb3EnableLoading)
-      enableWeb3({
-        provider: connectorId === "walletconnect" ? "walletconnect" : undefined,
-      });
-  }, [isWeb3Enabled]);
+    Moralis.onWeb3Enabled((result) => console.log(result));
+    Moralis.onWeb3Deactivated((result) => console.log(result));
+    Moralis.onAccountChanged((chain) => console.log(chain));
+  }, []);
+
+  // useEffect(() => {
+  //   const connectorId = localStorage.getItem("connectorId");
+  //   if (!isWeb3Enabled && !isWeb3EnableLoading)
+  //     enableWeb3({
+  //       provider: connectorId === "walletconnect" ? "walletconnect" : undefined,
+  //     });
+  // }, [isWeb3Enabled]);
 
   return (
     <Box
