@@ -6,6 +6,17 @@ import SavvyFinanceFarm from "../back_end_build/contracts/SavvyFinanceFarm.json"
 import deploymentsMap from "../back_end_build/deployments/map.json";
 import helperConfig from "../helper-config.json";
 
+const zeroAddress = helperConfig.zeroAddress;
+const defaultTokenStakerData = {
+  walletBalance: 0,
+  rewardBalance: 0,
+  stakingBalance: 0,
+  stakingRewardToken: "0x0000000000000000000000000000000000000000",
+  stakingRewards: [],
+  timestampLastRewarded: 0,
+  timestampAdded: 0,
+  timestampLastUpdated: 0,
+};
 export const farmAbi = SavvyFinanceFarm.abi;
 export const farmChainId = helperConfig.defaultChainId;
 export const farmChain = helperConfig.networks[farmChainId][1];
@@ -177,76 +188,83 @@ export const useTokensStakerData = (
   useEffect(() => {
     if (tokenAddresses.length > 0)
       tokenAddresses.forEach(async (tokenAddress, index) => {
-        await delay(1000 * index);
-        const options: {
-          abi: {}[];
-          chain: "bsc" | "bsc testnet";
-          address: string;
-          function_name: string;
-          params: {};
-        } = {
-          abi: farmAbi,
-          chain: farmChain,
-          address: farmAddress,
-          function_name: "getTokenStakerData",
-          params: { _token: tokenAddress, _staker: stakerAddress },
-        };
-        const response = (await Moralis.Web3API.native.runContractFunction(
-          options
-        )) as unknown as any[];
-        const walletBalance = !walletIsConnected
-          ? "0"
-          : (
-              await Moralis.Web3API.account.getTokenBalances({
-                chain: farmChain,
-                address: stakerAddress,
-                token_addresses: [tokenAddress],
-              })
-            )[0].balance;
-        const tokenStakerData: TokenStakerData = {
-          walletBalance: parseFloat(Moralis.Units.FromWei(walletBalance)),
-          rewardBalance: parseFloat(Moralis.Units.FromWei(response[0])),
-          stakingBalance: parseFloat(Moralis.Units.FromWei(response[1])),
-          stakingRewardToken: response[2],
-          stakingRewards: response[3].map((stakingReward: any) => {
-            return {
-              id: parseInt(stakingReward[0]),
-              staker: stakingReward[1],
-              rewardToken: stakingReward[2],
-              rewardTokenPrice: parseFloat(
-                Moralis.Units.FromWei(stakingReward[3])
-              ),
-              rewardTokenAmount: parseFloat(
-                Moralis.Units.FromWei(stakingReward[4])
-              ),
-              stakedToken: stakingReward[5],
-              stakedTokenPrice: parseFloat(
-                Moralis.Units.FromWei(stakingReward[6])
-              ),
-              stakedTokenAmount: parseFloat(
-                Moralis.Units.FromWei(stakingReward[7])
-              ),
-              stakingApr: parseFloat(Moralis.Units.FromWei(stakingReward[8])),
-              stakingDurationInSeconds: parseInt(
-                Moralis.Units.FromWei(stakingReward[9])
-              ),
-              triggeredBy: [stakingReward[10][0], stakingReward[10][1]],
-              timestampAdded: parseInt(
-                Moralis.Units.FromWei(stakingReward[11])
-              ),
-              timestampLastUpdated: parseInt(
-                Moralis.Units.FromWei(stakingReward[12])
-              ),
-            };
-          }),
-          timestampLastRewarded: parseInt(Moralis.Units.FromWei(response[4])),
-          timestampAdded: parseInt(Moralis.Units.FromWei(response[5])),
-          timestampLastUpdated: parseInt(Moralis.Units.FromWei(response[6])),
-        };
-        setTokensStakerData((prevTokensStakerData) => ({
-          ...prevTokensStakerData,
-          [tokenAddress]: tokenStakerData,
-        }));
+        if (stakerAddress === zeroAddress)
+          setTokensStakerData((prevTokensStakerData) => ({
+            ...prevTokensStakerData,
+            [tokenAddress]: defaultTokenStakerData,
+          }));
+        else {
+          await delay(1000 * index);
+          const options: {
+            abi: {}[];
+            chain: "bsc" | "bsc testnet";
+            address: string;
+            function_name: string;
+            params: {};
+          } = {
+            abi: farmAbi,
+            chain: farmChain,
+            address: farmAddress,
+            function_name: "getTokenStakerData",
+            params: { _token: tokenAddress, _staker: stakerAddress },
+          };
+          const response = (await Moralis.Web3API.native.runContractFunction(
+            options
+          )) as unknown as any[];
+          const walletBalance = !walletIsConnected
+            ? "0"
+            : (
+                await Moralis.Web3API.account.getTokenBalances({
+                  chain: farmChain,
+                  address: stakerAddress,
+                  token_addresses: [tokenAddress],
+                })
+              )[0]?.balance ?? 0;
+          const tokenStakerData: TokenStakerData = {
+            walletBalance: parseFloat(Moralis.Units.FromWei(walletBalance)),
+            rewardBalance: parseFloat(Moralis.Units.FromWei(response[0])),
+            stakingBalance: parseFloat(Moralis.Units.FromWei(response[1])),
+            stakingRewardToken: response[2],
+            stakingRewards: response[3].map((stakingReward: any) => {
+              return {
+                id: parseInt(stakingReward[0]),
+                staker: stakingReward[1],
+                rewardToken: stakingReward[2],
+                rewardTokenPrice: parseFloat(
+                  Moralis.Units.FromWei(stakingReward[3])
+                ),
+                rewardTokenAmount: parseFloat(
+                  Moralis.Units.FromWei(stakingReward[4])
+                ),
+                stakedToken: stakingReward[5],
+                stakedTokenPrice: parseFloat(
+                  Moralis.Units.FromWei(stakingReward[6])
+                ),
+                stakedTokenAmount: parseFloat(
+                  Moralis.Units.FromWei(stakingReward[7])
+                ),
+                stakingApr: parseFloat(Moralis.Units.FromWei(stakingReward[8])),
+                stakingDurationInSeconds: parseInt(
+                  Moralis.Units.FromWei(stakingReward[9])
+                ),
+                triggeredBy: [stakingReward[10][0], stakingReward[10][1]],
+                timestampAdded: parseInt(
+                  Moralis.Units.FromWei(stakingReward[11])
+                ),
+                timestampLastUpdated: parseInt(
+                  Moralis.Units.FromWei(stakingReward[12])
+                ),
+              };
+            }),
+            timestampLastRewarded: parseInt(Moralis.Units.FromWei(response[4])),
+            timestampAdded: parseInt(Moralis.Units.FromWei(response[5])),
+            timestampLastUpdated: parseInt(Moralis.Units.FromWei(response[6])),
+          };
+          setTokensStakerData((prevTokensStakerData) => ({
+            ...prevTokensStakerData,
+            [tokenAddress]: tokenStakerData,
+          }));
+        }
       });
   }, [tokenAddresses]);
 

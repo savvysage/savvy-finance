@@ -1,29 +1,51 @@
-import { Box, Container, CssBaseline, Stack } from "@mui/material";
 import { useEffect, useReducer } from "react";
 import { useMoralis } from "react-moralis";
-import { Footer } from "./components/Footer";
+import { Box, Container, CssBaseline, Stack } from "@mui/material";
+import { ResponsiveAppBar } from "./components/ResponsiveAppBar";
 import { Header } from "./components/Header";
 import { Main } from "./components/Main";
-import { ResponsiveAppBar } from "./components/ResponsiveAppBar";
+import { Footer } from "./components/Footer";
+import helperConfig from "./helper-config.json";
+
+const appName = helperConfig.appShortName;
 
 function App() {
   const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
-  const { Moralis, enableWeb3, isWeb3Enabled, isWeb3EnableLoading } =
-    useMoralis();
+  const {
+    Moralis,
+    enableWeb3,
+    isWeb3Enabled,
+    isWeb3EnableLoading,
+    chainId,
+    account: walletAddress,
+    isAuthenticated: walletIsConnected,
+    authenticate: connectWallet,
+    logout: disconnectWallet,
+  } = useMoralis();
 
   useEffect(() => {
-    Moralis.onWeb3Enabled((result) => console.log(result));
-    Moralis.onWeb3Deactivated((result) => console.log(result));
-    Moralis.onAccountChanged((chain) => console.log(chain));
-  }, []);
+    const connectorId = localStorage.getItem("connectorId");
+    if (connectorId && !isWeb3Enabled && !isWeb3EnableLoading)
+      (async () => {
+        await enableWeb3({
+          provider: connectorId as "walletconnect" | undefined,
+        });
+      })();
 
-  // useEffect(() => {
-  //   const connectorId = localStorage.getItem("connectorId");
-  //   if (!isWeb3Enabled && !isWeb3EnableLoading)
-  //     enableWeb3({
-  //       provider: connectorId === "walletconnect" ? "walletconnect" : undefined,
-  //     });
-  // }, [isWeb3Enabled]);
+    // Moralis.onWeb3Enabled((result) => console.log(result));
+    // Moralis.onWeb3Deactivated((result) => console.log(result));
+    Moralis.onAccountChanged(async (chain) => {
+      try {
+        await disconnectWallet();
+        await connectWallet({
+          signingMessage: `${appName} Authentication`,
+          provider: connectorId as "walletconnect" | undefined,
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    });
+  }, []);
 
   return (
     <Box

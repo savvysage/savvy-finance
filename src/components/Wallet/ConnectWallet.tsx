@@ -79,10 +79,7 @@ export const ConnectWallet = (props: {
                   try {
                     await connectWallet({
                       signingMessage: `${appName} Authentication`,
-                      provider:
-                        connectorId === "walletconnect"
-                          ? "walletconnect"
-                          : undefined,
+                      provider: connectorId as "walletconnect" | undefined,
                     });
                     localStorage.setItem("connectorId", connectorId);
                     handleClose();
