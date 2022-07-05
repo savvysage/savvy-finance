@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/farm-verse/static/css/main.31d6cfe0.css",
-    "main.js": "/farm-verse/static/js/main.2519f998.js",
+    "main.js": "/farm-verse/static/js/main.b58df105.js",
     "static/js/787.303646c6.chunk.js": "/farm-verse/static/js/787.303646c6.chunk.js",
     "static/media/MetaMask.png": "/farm-verse/static/media/MetaMask.4e2521c18d2b6a842a60.png",
     "static/media/TrustWallet.png": "/farm-verse/static/media/TrustWallet.d01e97a21af79a1c41b3.png",
     "index.html": "/farm-verse/index.html",
-    "main.2519f998.js.map": "/farm-verse/static/js/main.2519f998.js.map",
+    "main.b58df105.js.map": "/farm-verse/static/js/main.b58df105.js.map",
     "787.303646c6.chunk.js.map": "/farm-verse/static/js/787.303646c6.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.31d6cfe0.css",
-    "static/js/main.2519f998.js"
+    "static/js/main.b58df105.js"
   ]
 }
