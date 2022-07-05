@@ -2,7 +2,7 @@
   "name": "farm-verse",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://savvysage.github.io/farm-verse",
+  "homepage": "https://savvysage.github.io/savvy-finance",
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
