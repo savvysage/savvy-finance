@@ -19,7 +19,7 @@ const defaultTokenStakerData = {
 };
 export const farmAbi = SavvyFinanceFarm.abi;
 export const farmChainId = helperConfig.defaultChainId;
-export const farmChain = helperConfig.networks[farmChainId][1];
+export const farmChain = helperConfig.networks[farmChainId].name[1];
 export const farmAddress =
   deploymentsMap[farmChainId]["TransparentUpgradeableProxy"][0];
 

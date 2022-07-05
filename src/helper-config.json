@@ -3,8 +3,16 @@
   "appShortName": "FarmVerse",
   "defaultChainId": 97,
   "networks": {
-    "56": ["bsc-main", "bsc"],
-    "97": ["bsc-test", "bsc testnet"]
+    "56": {
+      "name": ["bsc-main", "bsc"],
+      "jsonRpcUrl": "https://bsc-dataseed.binance.org/",
+      "stableTokenAddress": "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56"
+    },
+    "97": {
+      "name": ["bsc-test", "bsc testnet"],
+      "jsonRpcUrl": "https://data-seed-prebsc-1-s3.binance.org:8545/",
+      "stableTokenAddress": "0x78867BbEeF44f2326bF8DDd1941a4439382EF2A7"
+    }
   },
   "zeroAddress": "0x0000000000000000000000000000000000000000"
 }
