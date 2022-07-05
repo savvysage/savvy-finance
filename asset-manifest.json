@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/farm-verse/static/css/main.31d6cfe0.css",
-    "main.js": "/farm-verse/static/js/main.b58df105.js",
-    "static/js/787.303646c6.chunk.js": "/farm-verse/static/js/787.303646c6.chunk.js",
-    "static/media/MetaMask.png": "/farm-verse/static/media/MetaMask.4e2521c18d2b6a842a60.png",
-    "static/media/TrustWallet.png": "/farm-verse/static/media/TrustWallet.d01e97a21af79a1c41b3.png",
-    "index.html": "/farm-verse/index.html",
-    "main.b58df105.js.map": "/farm-verse/static/js/main.b58df105.js.map",
-    "787.303646c6.chunk.js.map": "/farm-verse/static/js/787.303646c6.chunk.js.map"
+    "main.css": "/savvy-finance/static/css/main.31d6cfe0.css",
+    "main.js": "/savvy-finance/static/js/main.9767b5a8.js",
+    "static/js/787.303646c6.chunk.js": "/savvy-finance/static/js/787.303646c6.chunk.js",
+    "static/media/MetaMask.png": "/savvy-finance/static/media/MetaMask.4e2521c18d2b6a842a60.png",
+    "static/media/TrustWallet.png": "/savvy-finance/static/media/TrustWallet.d01e97a21af79a1c41b3.png",
+    "index.html": "/savvy-finance/index.html",
+    "main.9767b5a8.js.map": "/savvy-finance/static/js/main.9767b5a8.js.map",
+    "787.303646c6.chunk.js.map": "/savvy-finance/static/js/787.303646c6.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.31d6cfe0.css",
-    "static/js/main.b58df105.js"
+    "static/js/main.9767b5a8.js"
   ]
 }
